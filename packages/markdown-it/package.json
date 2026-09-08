@@ -1,6 +1,6 @@
 {
   "name": "@leandown/markdown-it",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "markdown-it plugin for syntax-highlighting Lean 4 code blocks via the Lean LSP",
   "repository": {
     "url": "https://github.com/mzhang28/leandown"

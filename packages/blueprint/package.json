@@ -1,6 +1,6 @@
 {
   "name": "@leandown/blueprint",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "All-in-one CLI for managing Lean blueprint projects — markdown-based mathematical documents with Lean formalization tracking",
   "repository": {
     "url": "https://github.com/mzhang28/leandown"
