@@ -15,9 +15,10 @@
   --lean-type: #0184bc;
   --lean-string: #50a14f;
   --lean-number: #986801;
-  --lean-comment: #a0a1a7;
+  --lean-comment: #2e7d32;
   --lean-operator: #0184bc;
   --lean-sorry: #e45649;
+  --lean-muted: #a0a1a7;
 
   --lean-hover-bg: rgba(64, 120, 242, 0.15);
   --lean-hover-shadow: rgba(64, 120, 242, 0.3);
@@ -33,6 +34,7 @@
 
   --lean-goal-marker: #0184bc;
   --lean-goal-marker-hover: #4078f2;
+  --lean-output: #6b6f76;
 
   --lean-squiggly-error: #e45649;
   --lean-squiggly-warning: #c18401;
@@ -53,9 +55,10 @@
   --lean-type: #56b6c2;
   --lean-string: #98c379;
   --lean-number: #d19a66;
-  --lean-comment: #7f848e;
+  --lean-comment: #7fa86b;
   --lean-operator: #56b6c2;
   --lean-sorry: #ff6b6b;
+  --lean-muted: #7f848e;
 
   --lean-hover-bg: rgba(97, 175, 239, 0.25);
   --lean-hover-shadow: rgba(97, 175, 239, 0.5);
@@ -71,6 +74,7 @@
 
   --lean-goal-marker: #56b6c2;
   --lean-goal-marker-hover: #61afef;
+  --lean-output: #9199a5;
 
   --lean-squiggly-error: #e06c75;
   --lean-squiggly-warning: #e5c07b;
@@ -92,9 +96,10 @@
     --lean-type: #56b6c2;
     --lean-string: #98c379;
     --lean-number: #d19a66;
-    --lean-comment: #7f848e;
+    --lean-comment: #7fa86b;
     --lean-operator: #56b6c2;
     --lean-sorry: #ff6b6b;
+    --lean-muted: #7f848e;
 
     --lean-hover-bg: rgba(97, 175, 239, 0.25);
     --lean-hover-shadow: rgba(97, 175, 239, 0.5);
@@ -110,6 +115,7 @@
 
     --lean-goal-marker: #56b6c2;
     --lean-goal-marker-hover: #61afef;
+    --lean-output: #9199a5;
 
     --lean-squiggly-error: #e06c75;
     --lean-squiggly-warning: #e5c07b;
@@ -400,7 +406,7 @@ pre code.language-lean {
 /* Inline diagnostics (e.g. #eval and #check output) */
 .lean-diagnostic-inline {
   display: block;
-  color: var(--lean-goal-marker);
+  color: var(--lean-output);
   margin-left: 20px;
 }
 
@@ -411,7 +417,7 @@ pre code.language-lean {
 
 .lean-diagnostic-summary {
   display: inline;
-  color: var(--lean-goal-marker);
+  color: var(--lean-output);
   cursor: pointer;
   outline: none;
 }
@@ -442,7 +448,7 @@ pre code.language-lean {
 
 .lean-diagnostic-expanded {
   display: block;
-  color: var(--lean-goal-marker);
+  color: var(--lean-output);
   margin-left: 0px;
   opacity: 0.95;
   white-space: pre;
@@ -519,7 +525,7 @@ pre code.language-lean {
 .lean-loading-message {
   margin: 0;
   font-size: 0.95rem;
-  color: var(--lean-comment);
+  color: var(--lean-muted);
 }
 
 @keyframes lean-loading-spin {

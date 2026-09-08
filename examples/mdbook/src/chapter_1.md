@@ -3,7 +3,7 @@
 hello :)
 
 ```lean
-def f (x : Nat) := x + 1
+def f (x : Nat) := x + 1 -- comment
 
 #eval f 5
 ```

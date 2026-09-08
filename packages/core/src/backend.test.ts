@@ -70,7 +70,7 @@ describe("HtmlBackend", () => {
       isEvalOrCheck: true,
     };
     expect(backend.renderDiagnostic(diagEvalSingle)).toBe(
-      '<span class="lean-diagnostic-inline" data-hover-id="h2">2</span>'
+      '<span class="lean-diagnostic-inline" data-hover-id="h2">&gt;&gt; 2</span>'
     );
 
     // Multi-line #eval or #check diagnostic
@@ -82,7 +82,31 @@ describe("HtmlBackend", () => {
       isEvalOrCheck: true,
     };
     expect(backend.renderDiagnostic(diagEvalMulti)).toBe(
-      '<details class="lean-diagnostic-details"><summary class="lean-diagnostic-summary" data-hover-id="h3">line 1</summary><span class="lean-diagnostic-expanded">\nline 2\nline 3</span></details>'
+      '<details class="lean-diagnostic-details"><summary class="lean-diagnostic-summary" data-hover-id="h3">&gt;&gt; line 1</summary><span class="lean-diagnostic-expanded">\n&gt;&gt; line 2\n&gt;&gt; line 3</span></details>'
+    );
+
+    // Blank output lines stay blank rather than showing a bare marker.
+    const diagEvalBlankLine: DiagnosticPosition = {
+      character: 5,
+      severity: 3,
+      message: "line 1\n\nline 3\n",
+      hoverId: "h5",
+      isEvalOrCheck: true,
+    };
+    expect(backend.renderDiagnostic(diagEvalBlankLine)).toBe(
+      '<details class="lean-diagnostic-details"><summary class="lean-diagnostic-summary" data-hover-id="h5">&gt;&gt; line 1</summary><span class="lean-diagnostic-expanded">\n\n&gt;&gt; line 3\n</span></details>'
+    );
+
+    // A trailing newline still counts as single-line output, so it stays inline.
+    const diagEvalTrailingNewline: DiagnosticPosition = {
+      character: 5,
+      severity: 3,
+      message: "2\n",
+      hoverId: "h4",
+      isEvalOrCheck: true,
+    };
+    expect(backend.renderDiagnostic(diagEvalTrailingNewline)).toBe(
+      '<span class="lean-diagnostic-inline" data-hover-id="h4">&gt;&gt; 2</span>'
     );
   });
 });

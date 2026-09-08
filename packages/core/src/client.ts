@@ -11,6 +11,7 @@ import {
   type DiagnosticPosition,
   type DiagnosticSpan,
   parseSemanticTokens,
+  findCommentTokens,
   extractQueryTokens,
   deduplicateDiscoveredTokens,
   getGoalQueryPositions,
@@ -407,6 +408,23 @@ export class LeanLSPClient {
           }
         }
       }
+    }
+
+    // Comments come from our own lexer rather than the LSP. Skip any that would
+    // partially overlap a token the server reported, since interleaved spans
+    // would render as mis-nested markup.
+    for (const comment of findCommentTokens(lines)) {
+      const commentEnd = comment.start + comment.length;
+      const interleaves = tokens.some((t) => {
+        if (t.line !== comment.line) return false;
+        const tEnd = t.start + t.length;
+        if (t.start >= commentEnd || comment.start >= tEnd) return false;
+        const nested =
+          (t.start <= comment.start && tEnd >= commentEnd) ||
+          (comment.start <= t.start && commentEnd >= tEnd);
+        return !nested;
+      });
+      if (!interleaves) tokens.push(comment);
     }
 
     const lineGoals = new Map<number, GoalPosition[]>();

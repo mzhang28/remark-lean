@@ -179,6 +179,79 @@ export const parseSemanticTokens = (
 };
 
 /**
+ * Finds Lean comments and returns them as `comment` tokens, one per line.
+ *
+ * Lean's LSP leaves comments out of its semantic tokens, so they have to be
+ * recognized lexically: `--` runs to the end of the line, `/- -/` blocks nest
+ * (covering `/-- -/` doc comments and `/-! -/` module docs) and may span lines,
+ * and string literals are tracked so `"-- not a comment"` stays code.
+ */
+export const findCommentTokens = (lines: string[]): Token[] => {
+  const tokens: Token[] = [];
+  let blockDepth = 0;
+  let inString = false;
+
+  lines.forEach((lineText, line) => {
+    const text = lineText || "";
+    // Where the comment covering the current position began on this line; a
+    // block comment carried over from an earlier line starts at column 0.
+    let commentStart: number | null = blockDepth > 0 ? 0 : null;
+
+    const emit = (end: number) => {
+      if (commentStart !== null && end > commentStart) {
+        tokens.push({
+          line,
+          start: commentStart,
+          length: end - commentStart,
+          type: "comment",
+        });
+      }
+      commentStart = null;
+    };
+
+    let col = 0;
+    while (col < text.length) {
+      if (blockDepth > 0) {
+        if (text.startsWith("-/", col)) {
+          blockDepth--;
+          col += 2;
+          if (blockDepth === 0) emit(col);
+        } else if (text.startsWith("/-", col)) {
+          blockDepth++;
+          col += 2;
+        } else {
+          col++;
+        }
+      } else if (inString) {
+        if (text[col] === "\\") col += 2;
+        else if (text[col] === '"') {
+          inString = false;
+          col++;
+        } else col++;
+      } else if (text.startsWith("--", col)) {
+        commentStart = col;
+        col = text.length;
+        emit(col);
+      } else if (text.startsWith("/-", col)) {
+        blockDepth = 1;
+        commentStart = col;
+        col += 2;
+      } else if (text[col] === '"') {
+        inString = true;
+        col++;
+      } else {
+        col++;
+      }
+    }
+
+    // An unterminated block comment carries on to the next line.
+    emit(text.length);
+  });
+
+  return tokens;
+};
+
+/**
  * Tokenizes lines of code to identify potential queryable word boundaries.
  */
 export const extractQueryTokens = (lines: string[]): QueryToken[] =>

@@ -64,6 +64,26 @@ test.describe("Lean Markdown Renderer E2E Tests", () => {
     await expect(variables.first()).toBeVisible();
   });
 
+  test("should highlight comments in green without swallowing code", async ({ page }) => {
+    const comments = page.locator(".lean-comment");
+    await expect(comments.first()).toBeVisible();
+
+    const commentTexts = await comments.allInnerTexts();
+    expect(commentTexts).toContain("-- A line comment");
+    expect(commentTexts).toContain("/-- A doc comment for `answer`. -/");
+    expect(commentTexts).toContain("-- trailing comment");
+    // A block comment is emitted per line, so each line stands on its own.
+    expect(commentTexts).toContain("/- A block");
+    expect(commentTexts).toContain("comment -/");
+    // Comment markers inside a string literal are code, not comments.
+    expect(commentTexts.some((t) => t.includes("not a comment"))).toBe(false);
+
+    const color = await comments.first().evaluate((el) => getComputedStyle(el).color);
+    const [r, g, b] = color.match(/\d+/g)!.map(Number) as [number, number, number];
+    expect(g, `comment color ${color} should be green-dominant`).toBeGreaterThan(r);
+    expect(g, `comment color ${color} should be green-dominant`).toBeGreaterThan(b);
+  });
+
   test("should synchronize hovers for identifiers with the same data-symbol", async ({ page }) => {
     const symbols = page.locator("[data-symbol]");
     await expect(symbols.first()).toBeVisible();

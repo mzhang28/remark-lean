@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createClient, type Client } from "@libsql/client";
 
-export const CACHE_VERSION = "v8-next-line-blue";
+export const CACHE_VERSION = "v10-output-marker";
 
 export function hashContent(content: string): string {
   return crypto.createHash("sha256").update(content).digest("hex");

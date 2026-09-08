@@ -52,9 +52,16 @@ console.log(message);
 Let's evaluate some expressions and check some types:
 
 ```lean
+-- A line comment
+/-- A doc comment for `answer`. -/
+def answer : Nat := 42 -- trailing comment
+
+/- A block
+   comment -/
 #eval 1 + 1
 #check Nat.add
 #check "Hello"
+#check "-- not a comment"
 #eval IO.println "Line 1\nLine 2\nLine 3"
 ```
 

@@ -1,6 +1,19 @@
 import escapeHtml from "escape-html";
 import type { Token, GoalPosition, DiagnosticPosition, DiagnosticSpan } from "./lib.ts";
 
+/**
+ * Prefixed to every line of `#eval` / `#check` output so results read as output
+ * rather than as more source code.
+ */
+export const OUTPUT_MARKER = ">> ";
+
+/** Blank lines stay blank so trailing newlines don't leave a dangling marker. */
+const markOutputLines = (text: string): string =>
+  text
+    .split("\n")
+    .map((line) => (line ? OUTPUT_MARKER + line : line))
+    .join("\n");
+
 export interface LeanHighlightBackend {
   /** The name of the backend (used for cache isolation). */
   readonly name: string;
@@ -98,13 +111,15 @@ export class HtmlBackend implements LeanHighlightBackend {
       if (restLines) {
         return `<details class="lean-diagnostic-details"><summary class="lean-diagnostic-summary" data-hover-id="${
           diagnostic.hoverId
-        }">${escapeHtml(firstLine)}</summary><span class="lean-diagnostic-expanded">\n${escapeHtml(
-          restLines
+        }">${escapeHtml(
+          markOutputLines(firstLine)
+        )}</summary><span class="lean-diagnostic-expanded">\n${escapeHtml(
+          markOutputLines(restLines)
         )}</span></details>`;
       } else {
         return `<span class="lean-diagnostic-inline" data-hover-id="${
           diagnostic.hoverId
-        }">${escapeHtml(firstLine)}</span>`;
+        }">${escapeHtml(markOutputLines(firstLine))}</span>`;
       }
     }
 
